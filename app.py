@@ -3,15 +3,25 @@ from flask_cors import CORS
 import tensorflow as tf
 import numpy as np
 from PIL import Image
-import os   # ✅ added
+import os
+import gdown   # ✅ NEW
 
 app = Flask(__name__)
 CORS(app)
 
-# ✅ Load correct model
-model = tf.keras.models.load_model("waste_model.keras")
+# ✅ Download model if not exists
+MODEL_PATH = "waste_model.keras"
 
-# ✅ Class labels (MUST match training order)
+if not os.path.exists(MODEL_PATH):
+    print("⬇️ Downloading model from Google Drive...")
+    url = "https://drive.google.com/uc?id=YOUR_FILE_ID"   # 🔥 PUT YOUR FILE ID HERE
+    gdown.download(url, MODEL_PATH, quiet=False)
+    print("✅ Model downloaded!")
+
+# ✅ Load model
+model = tf.keras.models.load_model(MODEL_PATH)
+
+# ✅ Class labels
 classes = ["cardboard","glass","metal","paper","plastic","trash"]
 
 # ✅ Prediction function
@@ -40,7 +50,6 @@ def predict():
     file = request.files["image"]
 
     try:
-        # ✅ Convert to RGB
         image = Image.open(file).convert("RGB")
 
         prediction, confidence = predict_image(image)
@@ -63,7 +72,7 @@ def home():
     return "✅ Flask Backend is Running"
 
 
-# ✅ FINAL FIX (VERY IMPORTANT FOR RENDER)
+# ✅ Render compatible run
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
