@@ -3,6 +3,7 @@ from flask_cors import CORS
 import tensorflow as tf
 import numpy as np
 from PIL import Image
+import os   # ✅ added
 
 app = Flask(__name__)
 CORS(app)
@@ -39,7 +40,7 @@ def predict():
     file = request.files["image"]
 
     try:
-        # ✅ FIX: Convert to RGB
+        # ✅ Convert to RGB
         image = Image.open(file).convert("RGB")
 
         prediction, confidence = predict_image(image)
@@ -56,11 +57,13 @@ def predict():
         return jsonify({"error": "Prediction failed"}), 500
 
 
-# ✅ Test route (VERY IMPORTANT)
+# ✅ Test route
 @app.route("/", methods=["GET"])
 def home():
     return "✅ Flask Backend is Running"
 
 
+# ✅ FINAL FIX (VERY IMPORTANT FOR RENDER)
 if __name__ == "__main__":
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host="0.0.0.0", port=port)
