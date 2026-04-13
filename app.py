@@ -14,7 +14,7 @@ MODEL_PATH = "waste_model.keras"
 
 if not os.path.exists(MODEL_PATH):
     print("⬇️ Downloading model from Google Drive...")
-    url = "https://drive.google.com/file/d/1oxlwFJ4i8ShNxWieKGMVkEPssjCWF-sZ/view?usp=drive_link"   # 🔥 PUT YOUR FILE ID HERE
+    url = "https://drive.google.com/file/d/1oxlwFJ4i8ShNxWieKGMVkEPssjCWF-sZ/view?usp=drive_link"   
     gdown.download(url, MODEL_PATH, quiet=False)
     print("✅ Model downloaded!")
 
