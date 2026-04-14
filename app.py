@@ -4,17 +4,20 @@ import tensorflow as tf
 import numpy as np
 from PIL import Image
 import os
-import gdown   # ✅ NEW
+import gdown
 
 app = Flask(__name__)
-CORS(app)
 
-# ✅ Download model if not exists
+# ✅ FIXED CORS (IMPORTANT)
+CORS(app, resources={r"/*": {"origins": "*"}})
+
+# ✅ Model path
 MODEL_PATH = "waste_model.keras"
 
+# ✅ Download model if not exists
 if not os.path.exists(MODEL_PATH):
     print("⬇️ Downloading model from Google Drive...")
-    url = "https://drive.google.com/file/d/1oxlwFJ4i8ShNxWieKGMVkEPssjCWF-sZ/view?usp=drive_link"   
+    url = "https://drive.google.com/uc?id=1oxlwFJ4i8ShNxWieKGMVkEPssjCWF-sZ"
     gdown.download(url, MODEL_PATH, quiet=False)
     print("✅ Model downloaded!")
 
@@ -44,7 +47,6 @@ def predict():
     print("🔥 Request received")
 
     if "image" not in request.files:
-        print("❌ No image uploaded")
         return jsonify({"error": "No image uploaded"}), 400
 
     file = request.files["image"]
@@ -54,8 +56,6 @@ def predict():
 
         prediction, confidence = predict_image(image)
 
-        print(f"✅ Prediction: {prediction} ({confidence}%)")
-
         return jsonify({
             "prediction": prediction,
             "confidence": confidence
@@ -63,7 +63,7 @@ def predict():
 
     except Exception as e:
         print("❌ ERROR:", str(e))
-        return jsonify({"error": "Prediction failed"}), 500
+        return jsonify({"error": str(e)}), 500
 
 
 # ✅ Test route
@@ -72,7 +72,7 @@ def home():
     return "✅ Flask Backend is Running"
 
 
-# ✅ Render compatible run
+# ✅ Render compatible
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
