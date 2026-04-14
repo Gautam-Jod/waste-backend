@@ -12,21 +12,25 @@
 
 body{
 margin:0;
-font-family:Segoe UI;
-background:#f5f7fa;
+font-family:'Segoe UI',sans-serif;
+background:linear-gradient(135deg,#eef2f3,#dfe9f3);
 }
 
 /* NAVBAR */
 .navbar{
 background:white;
 padding:15px 40px;
-box-shadow:0 2px 10px rgba(0,0,0,0.05);
+box-shadow:0 4px 15px rgba(0,0,0,0.05);
 }
 
 /* HERO */
 .hero{
 text-align:center;
-margin-top:50px;
+margin-top:60px;
+}
+
+.hero h2{
+font-weight:700;
 }
 
 /* CARD */
@@ -34,14 +38,15 @@ margin-top:50px;
 background:white;
 padding:40px;
 border-radius:20px;
-box-shadow:0 10px 25px rgba(0,0,0,0.08);
-width:60%;
+box-shadow:0 15px 35px rgba(0,0,0,0.1);
+width:55%;
 margin:auto;
+transition:0.3s;
 }
 
 /* UPLOAD */
 .upload-box{
-border:2px dashed #ced4da;
+border:2px dashed #bbb;
 border-radius:15px;
 padding:30px;
 cursor:pointer;
@@ -55,47 +60,59 @@ background:#f0fff5;
 
 /* IMAGE */
 .preview{
-display:block;
-margin:20px auto;
-max-width:250px;
-border-radius:10px;
-box-shadow:0 5px 15px rgba(0,0,0,0.2);
 display:none;
+margin:20px auto;
+max-width:260px;
+border-radius:12px;
+box-shadow:0 10px 25px rgba(0,0,0,0.2);
 }
 
 /* BUTTON */
 .btn-analyze{
 margin-top:15px;
+width:100%;
+padding:12px;
+font-weight:600;
+border-radius:10px;
 }
 
 /* RESULT */
 .result-box{
 display:none;
-margin-top:20px;
+margin-top:25px;
 }
 
+.result-text{
+font-size:22px;
+font-weight:600;
+}
+
+/* PROGRESS */
 .progress{
-height:20px;
-border-radius:10px;
+height:22px;
+border-radius:20px;
+overflow:hidden;
 }
 
 /* CATEGORY */
 .categories{
-margin-top:60px;
+margin-top:70px;
 padding:20px;
 }
 
 .card-cat{
 background:white;
-padding:20px;
+padding:25px;
 border-radius:15px;
 text-align:center;
 box-shadow:0 5px 15px rgba(0,0,0,0.05);
 transition:0.3s;
+font-weight:500;
 }
 
 .card-cat:hover{
-transform:translateY(-5px);
+transform:translateY(-8px);
+box-shadow:0 10px 25px rgba(0,0,0,0.1);
 }
 
 /* LOADING */
@@ -111,23 +128,24 @@ margin-top:15px;
 <body>
 
 <!-- NAVBAR -->
-<div class="navbar">
+<div class="navbar d-flex justify-content-between align-items-center">
 <h4 class="text-success fw-bold m-0">♻ AI Waste Classifier</h4>
+<span class="text-muted">Smart Recycling Assistant</span>
 </div>
 
 <!-- HERO -->
 <div class="hero">
 
-<h2 class="fw-bold">Smart Waste Detection</h2>
-<p class="text-muted">Upload an image and let AI classify it instantly</p>
+<h2>AI-Powered Waste Detection</h2>
+<p class="text-muted">Upload an image and instantly classify waste into categories</p>
 
 <div class="main-card">
 
 <!-- UPLOAD -->
 <div class="upload-box" onclick="fileInput.click()">
-<p>Click or drag image here</p>
+<p class="mb-2">📂 Drag & drop or click to upload</p>
 <button class="btn btn-success">Select Image</button>
-<p class="text-muted mt-2">JPG, PNG • Max 10MB</p>
+<p class="text-muted mt-2">Supports JPG, PNG • Max 10MB</p>
 <input type="file" id="fileInput" hidden>
 </div>
 
@@ -140,16 +158,16 @@ Analyze Waste
 </button>
 
 <!-- LOADING -->
-<div class="loading" id="loading">
+<div class="loading text-center" id="loading">
 <div class="spinner-border text-success"></div>
-<p>Analyzing...</p>
+<p class="mt-2">Analyzing image...</p>
 </div>
 
 <!-- RESULT -->
-<div class="result-box" id="resultBox">
-<h4 id="predictionText"></h4>
+<div class="result-box text-center" id="resultBox">
+<h4 class="result-text" id="predictionText"></h4>
 
-<div class="progress w-50 mx-auto">
+<div class="progress w-75 mx-auto mt-3">
 <div id="progressBar" class="progress-bar bg-success"></div>
 </div>
 </div>
@@ -164,29 +182,12 @@ Analyze Waste
 
 <div class="row mt-4 g-4">
 
-<div class="col-md-4">
-<div class="card-cat">📦 Cardboard</div>
-</div>
-
-<div class="col-md-4">
-<div class="card-cat">💧 Plastic</div>
-</div>
-
-<div class="col-md-4">
-<div class="card-cat">📄 Paper</div>
-</div>
-
-<div class="col-md-4">
-<div class="card-cat">🔩 Metal</div>
-</div>
-
-<div class="col-md-4">
-<div class="card-cat">🍷 Glass</div>
-</div>
-
-<div class="col-md-4">
-<div class="card-cat">🗑 Trash</div>
-</div>
+<div class="col-md-4"><div class="card-cat">📦 Cardboard</div></div>
+<div class="col-md-4"><div class="card-cat">💧 Plastic</div></div>
+<div class="col-md-4"><div class="card-cat">📄 Paper</div></div>
+<div class="col-md-4"><div class="card-cat">🔩 Metal</div></div>
+<div class="col-md-4"><div class="card-cat">🍷 Glass</div></div>
+<div class="col-md-4"><div class="card-cat">🗑 Trash</div></div>
 
 </div>
 
@@ -236,7 +237,7 @@ async function uploadImage(){
         loading.style.display = "none"
         resultBox.style.display = "block"
 
-        predictionText.innerText = data.prediction.toUpperCase()
+        predictionText.innerText = `Detected: ${data.prediction.toUpperCase()}`
 
         progressBar.style.width = data.confidence + "%"
         progressBar.innerText = data.confidence + "%"
