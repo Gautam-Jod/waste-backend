@@ -4,30 +4,25 @@ import tensorflow as tf
 import numpy as np
 from PIL import Image
 import os
-import gdown
 
 app = Flask(__name__)
 
-# ✅ FIXED CORS (IMPORTANT)
+# ✅ FIX CORS (VERY IMPORTANT)
 CORS(app, resources={r"/*": {"origins": "*"}})
 
-# ✅ Model path
-MODEL_PATH = "waste_model.keras"
+# ✅ Load model lazily
+model = None
 
-# ✅ Download model if not exists
-if not os.path.exists(MODEL_PATH):
-    print("⬇️ Downloading model from Google Drive...")
-    url = "https://drive.google.com/uc?id=1oxlwFJ4i8ShNxWieKGMVkEPssjCWF-sZ"
-    gdown.download(url, MODEL_PATH, quiet=False)
-    print("✅ Model downloaded!")
+def load_model():
+    global model
+    if model is None:
+        print("📦 Loading model...")
+        MODEL_PATH = "waste_model.keras"
+        model = tf.keras.models.load_model(MODEL_PATH)
+        print("✅ Model loaded!")
 
-# ✅ Load model
-model = tf.keras.models.load_model(MODEL_PATH)
-
-# ✅ Class labels
 classes = ["cardboard","glass","metal","paper","plastic","trash"]
 
-# ✅ Prediction function
 def predict_image(img):
     img = img.resize((224,224))
     img = np.array(img) / 255.0
@@ -41,7 +36,6 @@ def predict_image(img):
     return classes[index], confidence
 
 
-# ✅ API Route
 @app.route("/predict", methods=["POST"])
 def predict():
     print("🔥 Request received")
@@ -49,9 +43,10 @@ def predict():
     if "image" not in request.files:
         return jsonify({"error": "No image uploaded"}), 400
 
-    file = request.files["image"]
-
     try:
+        load_model()
+
+        file = request.files["image"]
         image = Image.open(file).convert("RGB")
 
         prediction, confidence = predict_image(image)
@@ -66,13 +61,11 @@ def predict():
         return jsonify({"error": str(e)}), 500
 
 
-# ✅ Test route
 @app.route("/", methods=["GET"])
 def home():
     return "✅ Flask Backend is Running"
 
 
-# ✅ Render compatible
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
